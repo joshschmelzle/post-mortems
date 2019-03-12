@@ -32,7 +32,7 @@ PING 10.50.100.99 1472 data bytes
 
 The GRE tunnels between controller and APs have a SAP MTU of 1500. This means there is a fragmentation issue on the GRE tunnels. Packets fragmentation generally causes degraded perf and throughput.
 
-The fix is A: fix it up stream, B: fix ito n the controller by adjusting the SAP MTU on the working AP system profile, or C: create a new AP system profile and AP group, and moving the APs into it.
+The fix is __A:__ fix it up stream, __B:__ fix it on the controller by adjusting the SAP MTU on the current AP system profile, or __C:__ create a new AP system profile and AP group, and moving the APs into it.
 
 I created a new AP system profile and adjusted the SAP MTU to 1450, and created a new AP group. 
 
