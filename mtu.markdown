@@ -41,10 +41,12 @@ ap system-profile "new-profile"
    mtu 1450
 ```
 
-I moved the APs into the new group which means the APs will reboot. Once the APs came back up, clients having intermittent issues immediately associated and got L3 connectivity.
+I moved the APs into the new group which means the APs will reboot<sup>1</sup>. Once the APs came back up, clients having intermittent issues immediately associated and got L3 connectivity.
 
 To verify change on the controller:
 
 ```
 (controller)# show ap bss-table
 ```
+
+[1]: You could change it on the AP system profile without rebooting the APs. I'd test this in your env first before doing that.
