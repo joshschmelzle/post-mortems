@@ -2,9 +2,9 @@ At a remote site a few wireless clients were having intermittent issues. For exa
 
 On the Aruba controller, one would show up in `show ap association` and `show user-table`. While the problematic clients would only show up in `show ap association`, this means they're associated at L2, but they don't have L3 connectivity.
 
-Analyzing Splunk showed DHCPOFFERs followed by DHCPDISCOVERs in what looked like a loop. I checked the InfoBlox DHCP pools (VLAN pooling), L3 configs and assignments between Nokia PE and Aruba Controllers, and the controller configs. Checks passed.
+Analyzing Splunk showed DHCPOFFERs followed by DHCPDISCOVERs which looks like some sort of loop. I checked the InfoBlox DHCP pools (VLAN pooling /24s), L3 configs and assignments between Nokia PE and Aruba Controllers, and the primary/backup controller configs. Checks passed.
 
-But then I found that packets were being fragmented from the router to the campus AP:
+But then I found that packets were being fragmented from the router to campus AP:
 
 `size 1473`:
 
@@ -30,15 +30,15 @@ PING 10.50.100.99 1472 data bytes
 1480 bytes from 10.50.100.99: icmp_seq=2 ttl=64 time=0.640ms.
 ```
 
-The GRE tunnels between controller and APs have a SAP MTU of 1500. This means there is a fragmentation issue on the GRE tunnels. Packets fragmentation generally causes degraded perf and throughput.
+The GRE tunnels between controller and APs had a SAP MTU of 1500. The ping results above (with the do-not-fragment args) mean that the GRE tunnel MTU is larger than the fragmentation point. Packet fragmentation generally causes degraded perf and throughput.
 
-The fix is __A:__ fix it up stream, __B:__ fix it on the controller by adjusting the SAP MTU on the current AP system profile, or __C:__ create a new AP system profile and AP group, and moving the APs into it.
+Possible solutions include __A:__ adjust MTU upstream on the router, __B:__ adjust MTU on the controller by adjusting the SAP MTU on the current AP system profile, or __C:__ create a new AP system profile and AP group, and move the APs into it.
 
-I created a new AP system profile and adjusted the SAP MTU to 1450, and created a new AP group. 
+I chose to start with C. I created a new AP system profile adjusted the SAP MTU to 1450. It was originally set at 1500. 
 
 ```
 ap system-profile "new-profile"
-   mtu 1400
+   mtu 1450
 ```
 
 I moved the APs into the new group which means the APs will reboot. Once the APs came back up, clients having intermittent issues immediately associated and got L3 connectivity.
