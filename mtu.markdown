@@ -1,4 +1,4 @@
-At a remote site a few wireless clients were having intermittent issues. For example, two domain computers side by side configured the same way, and one would get L3 connectivity, the other would not grab an IP.
+At a remote site a few wireless clients were having intermittent issues. For example, two computers (on the domain) side by side/configured the same way --- one would get L3 connectivity and the other would not grab an IP.
 
 On the Aruba controller, one would show up in `show ap association` and `show user-table`. While the problematic clients would only show up in `show ap association`, this means they're associated at L2, but they don't have L3 connectivity.
 
